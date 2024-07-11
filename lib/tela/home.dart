@@ -15,7 +15,7 @@ class HomeState extends State<Home> {
       appBar: AppBar(
         title: const Text("Form Validation"),
       ),
-      body: FormV(),
+      body: const FormV(),
     );
   }
 }

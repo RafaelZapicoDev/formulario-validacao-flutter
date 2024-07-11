@@ -1,5 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:form_v/tela/check_box.dart';
+import 'package:radio_group_v2/radio_group_v2.dart';
 
 class FormV extends StatefulWidget {
   const FormV({super.key});
@@ -10,10 +12,12 @@ class FormV extends StatefulWidget {
 
 class FormVState extends State<FormV> {
   String? pais;
+  RadioGroupController genero = RadioGroupController();
+  bool termos = false;
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     const List<String> paises = [
       "Brasil",
@@ -24,11 +28,13 @@ class FormVState extends State<FormV> {
     ];
 
     return Form(
-        key: _formKey,
+        key: formKey,
         child: Container(
           alignment: Alignment.center,
           color: const Color.fromARGB(255, 230, 237, 238),
           child: Column(
+            //nota: é possível substituir column por wrap
+            //caso eu não queira deixar esse spam de padding
             children: [
               const Padding(padding: EdgeInsets.all(30)),
               const Text(
@@ -49,11 +55,24 @@ class FormVState extends State<FormV> {
                 decoration: const InputDecoration(hintText: "Nome completo"),
               ),
               const Padding(padding: EdgeInsets.all(10)),
+              RadioGroup(
+                controller: genero,
+                values: const ["Feminino", "Masculino", "Não Binário"],
+                orientation: RadioGroupOrientation.horizontal,
+                decoration: const RadioGroupDecoration(
+                  spacing: 10.0,
+                  labelStyle: TextStyle(
+                    color: Colors.blueAccent,
+                  ),
+                  activeColor: Colors.amber,
+                ),
+              ),
+              const Padding(padding: EdgeInsets.all(10)),
               TextFormField(
                 decoration: const InputDecoration(hintText: "Email"),
                 validator: (email) {
                   if (email == null ||
-                      !EmailValidator.validate(email!) ||
+                      !EmailValidator.validate(email) ||
                       !email.contains("@")) {
                     return "Insira um email válido!";
                   }
@@ -96,15 +115,31 @@ class FormVState extends State<FormV> {
                 },
               ),
               const Padding(padding: EdgeInsets.all(10)),
+              CheckboxFormField(
+                title: const Text("Li e concordo com os termos de uso"),
+                onSaved: (value) => {
+                  setState(() {
+                    termos = value ?? false;
+                  })
+                },
+                validator: (termos) {
+                  if (termos == false) {
+                    return "É preciso concordar para validar seu cadastro!";
+                  }
+                  return null;
+                },
+              ),
+              const Padding(padding: EdgeInsets.all(10)),
+              const Padding(padding: EdgeInsets.all(10)),
               Row(
                 children: [
                   ElevatedButton(
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {}
+                        if (formKey.currentState!.validate()) {}
                       },
                       child: const Text("Enviar"))
                 ],
-              )
+              ),
             ],
           ),
         ));
