@@ -14,6 +14,8 @@ class FormVState extends State<FormV> {
   String? pais;
   RadioGroupController genero = RadioGroupController();
   bool termos = false;
+  DateTime maioridade = DateTime(
+      DateTime.now().year - 18, DateTime.now().month, DateTime.now().day);
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +58,13 @@ class FormVState extends State<FormV> {
               ),
               const Padding(padding: EdgeInsets.all(10)),
               RadioGroup(
+                indexOfDefault: 2,
                 controller: genero,
-                values: const ["Feminino", "Masculino", "Não Binário"],
+                values: const [
+                  "Feminino",
+                  "Masculino",
+                  "Prefiro não responder"
+                ],
                 orientation: RadioGroupOrientation.horizontal,
                 decoration: const RadioGroupDecoration(
                   spacing: 10.0,
@@ -109,10 +116,17 @@ class FormVState extends State<FormV> {
                     const InputDecoration(hintText: "Telefone / Celular"),
                 validator: (numero) {
                   if (double.tryParse(numero!) == null) {
-                    return "Insira um email válido!";
+                    return "Isso é um NUMERO?!";
                   }
                   return null;
                 },
+              ),
+              const Padding(padding: EdgeInsets.all(10)),
+              InputDatePickerFormField(
+                fieldLabelText: "Data de nascimento",
+                fieldHintText: "dd/mm/yyyy",
+                firstDate: DateTime(1900, 1, 1),
+                lastDate: maioridade,
               ),
               const Padding(padding: EdgeInsets.all(10)),
               CheckboxFormField(
